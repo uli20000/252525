@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GES Performance Pro</title>
+    <title>GES</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -79,7 +79,7 @@
     <h2>GES Performance</h2>
     
     <div class="form-group">
-        <label>Manager (AC)</label>
+        <label>AC</label>
         <select id="manager">
             <option value="Renee">Renee</option>
             <option value="Ean">Ean</option>
@@ -155,10 +155,11 @@
             el.innerHTML = `<span class="pass-text">Reached ✓</span>`;
         } else {
             const gap = Math.ceil((n * (target - score)) / (100 - target));
-            el.innerHTML = `Need <span class="gap-num">+${gap}</span> (100%)`;
+            el.innerHTML = ` <span class="gap-num">+${gap}</span>`;
         }
     }
 </script>
 
 </body>
 </html>
+
