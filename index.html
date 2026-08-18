@@ -1,169 +1,814 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GES Performance</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #0f172a;
-            --card: rgba(255, 255, 255, 0.95);
-        }
-        
-        body { 
-            font-family: 'Inter', 'PingFang TC', sans-serif; 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; color: #1e293b;
-            -webkit-font-smoothing: antialiased;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-        .container { 
-            width: 85%; max-width: 380px; background: var(--card); 
-            padding: 30px; border-radius: 32px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px);
-        }
+<title>D25 抵達判斷器</title>
 
-        h2 { text-align: center; color: var(--bg); margin-top: 0; margin-bottom: 25px; font-weight: 800; font-size: 1.6rem; letter-spacing: -1px; }
-        
-        .form-group { margin-bottom: 20px; text-align: center; }
-        label { display: block; margin-bottom: 8px; font-weight: 700; color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        select, input { 
-            width: 100%; padding: 14px; border: 2px solid #e2e8f0; 
-            border-radius: 16px; font-size: 16px; box-sizing: border-box;
-            background-color: #fff; transition: all 0.2s ease;
-            text-align: center;
-            color: #1e293b;
-        }
-        
-        select { text-align-last: center; cursor: pointer; }
-        input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+<style>
+:root {
+    --kfc-red: #e4002b;
+    --kfc-dark-red: #c90025;
+    --kfc-light: #f7f7f7;
+    --text: #1f1f1f;
+    --gray: #777;
+}
 
-        .score-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 16px; 
-            background: #f8fafc; padding: 20px; border-radius: 24px; margin-bottom: 24px;
-        }
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-        button { 
-            width: 100%; padding: 18px; background: var(--primary);
-            color: white; border: none; border-radius: 18px; font-size: 16px; font-weight: 700; 
-            cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-        }
-        button:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
-        button:active { transform: translateY(0); }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #f2f2f2;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Microsoft JhengHei",
+        "Noto Sans TC",
+        Arial,
+        sans-serif;
+    color: var(--text);
+}
 
-        .result-box { 
-            margin-top: 25px; border-radius: 24px; display: none; 
-            background: #ffffff; border: 1px solid #f1f5f9; padding: 20px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        
-        .res-title { font-size: 12px; color: #94a3b8; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; font-weight: 600; }
-        .res-row { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 0; }
-        
-        .tag { padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 11px; text-transform: uppercase; }
-        .tag-osat { background: #eff6ff; color: #1e40af; }
-        .tag-sos { background: #fffbeb; color: #92400e; }
-        
-        .gap-num { color: var(--danger); font-size: 1.4rem; font-weight: 800; }
-        .pass-text { color: var(--success); font-weight: 700; font-size: 1.1rem; }
-        .res-divider { width: 50%; height: 1px; background: #f1f5f9; margin: 0 auto; }
-        .unit { font-size: 0.8rem; color: #94a3b8; font-weight: 500; margin-left: 2px; }
-    </style>
+/* 手機主要畫面 */
+
+.app {
+    width: 100%;
+    max-width: 600px;
+    min-height: 100vh;
+    margin: auto;
+    background: white;
+}
+
+/* 頂部 */
+
+.header {
+    background: var(--kfc-red);
+    color: white;
+    padding:
+        calc(20px + env(safe-area-inset-top))
+        20px
+        24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border: 25px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+    right: -70px;
+    top: -80px;
+}
+
+.brand {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-mark {
+    width: 46px;
+    height: 46px;
+    background: white;
+    color: var(--kfc-red);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.brand h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.brand p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* 主內容 */
+
+.content {
+    padding: 20px 16px 40px;
+}
+
+/* 提示區 */
+
+.notice {
+    background: #fff5f6;
+    border-left: 5px solid var(--kfc-red);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.notice strong {
+    color: var(--kfc-red);
+}
+
+/* 表單 */
+
+.form-card {
+    background: white;
+    border-radius: 18px;
+    padding: 4px 0;
+}
+
+.field {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.label-number {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    background: var(--kfc-red);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    margin-right: 6px;
+}
+
+input {
+    width: 100%;
+    height: 56px;
+    padding: 0 15px;
+    border: 2px solid #e5e5e5;
+    border-radius: 14px;
+    background: white;
+    color: var(--text);
+    font-size: 18px;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--kfc-red);
+}
+
+/* QT 特別設計 */
+
+.qt-wrapper {
+    position: relative;
+}
+
+.qt-wrapper input {
+    padding-right: 65px;
+}
+
+.qt-unit {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-weight: bold;
+}
+
+/* 按鈕 */
+
+button {
+    width: 100%;
+    min-height: 60px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 16px;
+    background: var(--kfc-red);
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 0 var(--kfc-dark-red);
+    transition: transform 0.1s;
+}
+
+button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 var(--kfc-dark-red);
+}
+
+/* 錯誤 */
+
+.error {
+    display: none;
+    margin-top: 18px;
+    padding: 14px;
+    background: #fff0f0;
+    color: var(--kfc-red);
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* 結果 */
+
+.result {
+    display: none;
+    margin-top: 28px;
+    overflow: hidden;
+    border-radius: 22px;
+    background: white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+/* 結果標頭 */
+
+.result-header {
+    padding: 22px 20px;
+    color: white;
+    text-align: center;
+}
+
+.instant .result-header {
+    background: var(--kfc-red);
+}
+
+.reservation .result-header {
+    background: #222;
+}
+
+.result-icon {
+    font-size: 38px;
+    margin-bottom: 6px;
+}
+
+.result-type {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+/* 核心指令 */
+
+.action-area {
+    padding: 28px 20px;
+    text-align: center;
+}
+
+.action-label {
+    font-size: 16px;
+    color: var(--gray);
+    margin-bottom: 8px;
+}
+
+.action-text {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.deadline-time {
+    margin-top: 15px;
+    font-size: 46px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: var(--kfc-red);
+}
+
+.reservation .deadline-time {
+    color: #222;
+}
+
+/* 快速指令 */
+
+.quick-action {
+    margin: 0 20px 24px;
+    padding: 18px;
+    border-radius: 16px;
+    text-align: center;
+    font-weight: 800;
+}
+
+.instant .quick-action {
+    background: #fff1f3;
+    color: var(--kfc-red);
+}
+
+.reservation .quick-action {
+    background: #f1f1f1;
+    color: #222;
+}
+
+/* 明細 */
+
+.detail {
+    border-top: 1px solid #eee;
+    padding: 18px 20px 22px;
+    background: #fafafa;
+}
+
+.detail-title {
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row span:last-child {
+    font-weight: 800;
+    text-align: right;
+}
+
+/* 手機小螢幕 */
+
+@media (max-width: 380px) {
+
+    .brand h1 {
+        font-size: 21px;
+    }
+
+    .deadline-time {
+        font-size: 40px;
+    }
+
+    input {
+        font-size: 16px;
+    }
+
+}
+
+/* 電腦版讓畫面看起來仍像手機 App */
+
+@media (min-width: 601px) {
+
+    body {
+        padding: 20px;
+    }
+
+    .app {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+    }
+
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>GES</h2>
-    
-    <div class="form-group">
-        <label>Manager (AC)</label>
-        <select id="manager">
-            <option value="Renee">Renee</option>
-            <option value="Ean">Ean</option>
-            <option value="Carol">Carol</option>
-            <option value="Chance">Chance</option>
-            <option value="Jewel">Jewel</option>
-        </select>
+<div class="app">
+
+    <div class="header">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                D25
+            </div>
+
+            <div>
+                <h1>抵達時間判斷器</h1>
+                <p>即時單／預約單快速判斷</p>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="form-group">
-        <label>Total Survey Count</label>
-        <input type="number" id="totalCount" placeholder="0" inputmode="numeric">
+
+    <div class="content">
+
+        <div class="notice">
+            輸入訂單資訊後，系統會直接判斷：
+            <br>
+            <strong>這張單要追「落單＋25分鐘」還是「預計送達時間」</strong>
+        </div>
+
+
+        <div class="form-card">
+
+
+            <!-- 落單時間 -->
+
+            <div class="field">
+
+                <label>
+                    <span class="label-number">1</span>
+                    落單時間
+                </label>
+
+                <input
+                    type="datetime-local"
+                    id="orderTime"
+                >
+
+            </div>
+
+
+            <!-- 預計送達 -->
+
+            <div class="field">
+
+                <label>
+                    <span class="label-number">2</span>
+                    原預計送達時間
+                </label>
+
+                <input
+                    type="datetime-local"
+                    id="estimatedTime"
+                >
+
+            </div>
+
+
+            <!-- QT -->
+
+            <div class="field">
+
+                <label>
+                    <span class="label-number">3</span>
+                    QT 時間
+                </label>
+
+                <div class="qt-wrapper">
+
+                    <input
+                        type="number"
+                        id="qt"
+                        placeholder="例如 25"
+                        min="0"
+                    >
+
+                    <div class="qt-unit">
+                        分鐘
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button onclick="calculate()">
+                判斷這張訂單
+            </button>
+
+
+            <div
+                class="error"
+                id="error"
+            ></div>
+
+
+            <div
+                class="result"
+                id="result"
+            ></div>
+
+
+        </div>
+
     </div>
 
-    <div class="score-grid">
-        <div class="form-group" style="margin-bottom:0">
-            <label>Current OSAT %</label>
-            <input type="number" id="osatScore" step="0.1" placeholder="0.0">
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-            <label>Current SOS %</label>
-            <input type="number" id="sosScore" step="0.1" placeholder="0.0">
-        </div>
-    </div>
-
-    <button onclick="calculate()">Calculate Deficit</button>
-
-    <div id="resultBox" class="result-box">
-        <div class="res-title" id="resHeader"></div>
-        
-        <div class="res-row">
-            <span class="tag tag-osat">OSAT</span>
-            <span id="osatVal"></span>
-        </div>
-        
-        <div class="res-divider"></div>
-        
-        <div class="res-row">
-            <span class="tag tag-sos">SOS</span>
-            <span id="sosVal"></span>
-        </div>
-    </div>
 </div>
 
+
 <script>
-    function calculate() {
-        const manager = document.getElementById('manager').value;
-        const n = parseFloat(document.getElementById('totalCount').value);
-        const sOsat = parseFloat(document.getElementById('osatScore').value);
-        const sSos = parseFloat(document.getElementById('sosScore').value);
-        const target = 81;
 
-        if (isNaN(n) || n <= 0) {
-            alert("請輸入有效的總份數");
-            return;
+
+function formatTime(date) {
+
+    return date.toLocaleTimeString(
+        "zh-TW",
+        {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
         }
+    );
 
-        document.getElementById('resHeader').innerText = `${manager} · Target ${target}%`;
-        document.getElementById('resultBox').style.display = "block";
+}
 
-        updateRow('osatVal', n, sOsat, target);
-        updateRow('sosVal', n, sSos, target);
+
+function calculate() {
+
+    const orderValue =
+        document.getElementById("orderTime").value;
+
+    const estimatedValue =
+        document.getElementById("estimatedTime").value;
+
+    const qtValue =
+        document.getElementById("qt").value;
+
+    const result =
+        document.getElementById("result");
+
+    const error =
+        document.getElementById("error");
+
+
+    /* 重置 */
+
+    result.style.display = "none";
+
+    error.style.display = "none";
+
+    result.className = "result";
+
+
+    /* 檢查輸入 */
+
+    if (
+        !orderValue ||
+        !estimatedValue ||
+        qtValue === ""
+    ) {
+
+        error.innerText =
+            "請完整輸入落單時間、原預計送達時間與 QT。";
+
+        error.style.display = "block";
+
+        return;
+
     }
 
-    function updateRow(elementId, n, score, target) {
-        const el = document.getElementById(elementId);
-        if (isNaN(score)) {
-            el.innerHTML = "<span style='color:#cbd5e1; font-size:0.9rem;'>No Data</span>";
-            return;
-        }
-        
-        if (score >= target) {
-            el.innerHTML = `<span class="pass-text">Reached ✓</span>`;
-        } else {
-            const gap = Math.ceil((n * (target - score)) / (100 - target));
-            el.innerHTML = `<span class="gap-num">+${gap}</span><span class="unit">份</span>`;
-        }
+
+    const orderTime =
+        new Date(orderValue);
+
+    const estimatedTime =
+        new Date(estimatedValue);
+
+    const qt =
+        Number(qtValue);
+
+
+    /* 計算時間差 */
+
+    const totalMinutes =
+        (estimatedTime - orderTime)
+        / 1000
+        / 60;
+
+
+    /*
+        D25 判斷公式
+
+        原預計送達時間
+        - 落單時間
+        - 14分鐘
+        > QT
+
+        = 預約單
+
+        其他
+        = 即時單
+    */
+
+    const compareMinutes =
+        totalMinutes - 14;
+
+
+    /* 預約單 */
+
+    if (compareMinutes > qt) {
+
+        result.className =
+            "result reservation";
+
+        result.innerHTML = `
+
+            <div class="result-header">
+
+                <div class="result-icon">
+                    📅
+                </div>
+
+                <div class="result-type">
+                    預約單
+                </div>
+
+            </div>
+
+
+            <div class="action-area">
+
+                <div class="action-label">
+                    抵達追蹤時間
+                </div>
+
+                <div class="action-text">
+                    請於預計送達時間前
+                    <br>
+                    完成「抵達」
+                </div>
+
+                <div class="deadline-time">
+                    ${formatTime(estimatedTime)}
+                </div>
+
+            </div>
+
+
+            <div class="quick-action">
+                🎯 追預計送達時間
+            </div>
+
+
+            <div class="detail">
+
+                <div class="detail-title">
+                    判斷明細
+                </div>
+
+                <div class="detail-row">
+                    <span>預計送達－落單</span>
+                    <span>
+                        ${totalMinutes.toFixed(0)} 分鐘
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span>扣除固定時間</span>
+                    <span>
+                        ${compareMinutes.toFixed(0)} 分鐘
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span>QT</span>
+                    <span>
+                        ${qt} 分鐘
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span>判斷結果</span>
+                    <span>
+                        ${compareMinutes.toFixed(0)}
+                        ＞
+                        ${qt}
+                        → 預約單
+                    </span>
+                </div>
+
+            </div>
+
+        `;
+
     }
+
+
+    /* 即時單 */
+
+    else {
+
+        /*
+            即時單：
+
+            落單時間 + 25分鐘
+        */
+
+        const deadline =
+            new Date(
+                orderTime.getTime()
+                + 25 * 60 * 1000
+            );
+
+
+        result.className =
+            "result instant";
+
+        result.innerHTML = `
+
+            <div class="result-header">
+
+                <div class="result-icon">
+                    ⚡
+                </div>
+
+                <div class="result-type">
+                    即時單
+                </div>
+
+            </div>
+
+
+            <div class="action-area">
+
+                <div class="action-label">
+                    最晚抵達時間
+                </div>
+
+                <div class="action-text">
+                    請於落單後 25 分鐘內
+                    <br>
+                    完成「抵達」
+                </div>
+
+                <div class="deadline-time">
+                    ${formatTime(deadline)}
+                </div>
+
+            </div>
+
+
+            <div class="quick-action">
+                🚨 追「落單＋25分鐘」
+            </div>
+
+
+            <div class="detail">
+
+                <div class="detail-title">
+                    判斷明細
+                </div>
+
+                <div class="detail-row">
+                    <span>預計送達－落單</span>
+                    <span>
+                        ${totalMinutes.toFixed(0)} 分鐘
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span>扣除固定時間</span>
+                    <span>
+                        ${compareMinutes.toFixed(0)} 分鐘
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span>QT</span>
+                    <span>
+                        ${qt} 分鐘
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span>判斷結果</span>
+                    <span>
+                        ${compareMinutes.toFixed(0)}
+                        ≤
+                        ${qt}
+                        → 即時單
+                    </span>
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    result.style.display = "block";
+
+
+    /* 自動捲動到結果 */
+
+    setTimeout(() => {
+
+        result.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }, 100);
+
+}
+
+
 </script>
 
 </body>
