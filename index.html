@@ -4,15 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>D25 抵達判斷器</title>
+<title> D25 達標工具</title>
 
 <style>
 :root {
     --kfc-red: #e4002b;
-    --kfc-dark-red: #c90025;
-    --kfc-light: #f7f7f7;
+    --kfc-dark-red: #bd0024;
+    --kfc-light-red: #fff1f3;
+    --bg: #f3f3f3;
     --text: #1f1f1f;
     --gray: #777;
+    --line: #e6e6e6;
+    --green: #168a45;
+    --green-bg: #edf9f1;
+    --orange: #f28c00;
+    --orange-bg: #fff6e8;
 }
 
 * {
@@ -22,8 +28,8 @@
 
 body {
     margin: 0;
-    min-height: 100vh;
-    background: #f2f2f2;
+    background: var(--bg);
+    color: var(--text);
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -31,28 +37,27 @@ body {
         "Noto Sans TC",
         Arial,
         sans-serif;
-    color: var(--text);
 }
-
-/* 手機主要畫面 */
 
 .app {
     width: 100%;
     max-width: 600px;
     min-height: 100vh;
     margin: auto;
-    background: white;
+    background: #fff;
 }
 
-/* 頂部 */
+/* =========================
+   Header
+========================= */
 
 .header {
     background: var(--kfc-red);
-    color: white;
+    color: #fff;
     padding:
-        calc(20px + env(safe-area-inset-top))
+        calc(22px + env(safe-area-inset-top))
         20px
-        24px;
+        26px;
     position: relative;
     overflow: hidden;
 }
@@ -62,13 +67,13 @@ body {
     position: absolute;
     width: 180px;
     height: 180px;
-    border: 25px solid rgba(255,255,255,0.08);
+    border: 28px solid rgba(255,255,255,.08);
     border-radius: 50%;
-    right: -70px;
-    top: -80px;
+    right: -80px;
+    top: -90px;
 }
 
-.brand {
+.header-content {
     position: relative;
     z-index: 1;
     display: flex;
@@ -76,81 +81,73 @@ body {
     gap: 12px;
 }
 
-.brand-mark {
-    width: 46px;
-    height: 46px;
-    background: white;
+.logo-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #fff;
     color: var(--kfc-red);
-    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
     font-weight: 900;
 }
 
-.brand h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 800;
-}
-
-.brand p {
+.header p {
     margin: 4px 0 0;
     font-size: 13px;
-    opacity: 0.85;
+    opacity: .9;
 }
 
-/* 主內容 */
+/* =========================
+   Content
+========================= */
 
 .content {
     padding: 20px 16px 40px;
 }
 
-/* 提示區 */
-
 .notice {
-    background: #fff5f6;
+    background: var(--kfc-light-red);
     border-left: 5px solid var(--kfc-red);
-    border-radius: 10px;
     padding: 14px;
-    margin-bottom: 20px;
+    border-radius: 12px;
     font-size: 14px;
     line-height: 1.6;
+    margin-bottom: 22px;
 }
 
 .notice strong {
     color: var(--kfc-red);
 }
 
-/* 表單 */
-
-.form-card {
-    background: white;
-    border-radius: 18px;
-    padding: 4px 0;
-}
-
 .field {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
 label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
-.label-number {
-    display: inline-flex;
+.step {
     width: 24px;
     height: 24px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--kfc-red);
-    color: white;
     border-radius: 50%;
+    background: var(--kfc-red);
+    color: #fff;
     font-size: 12px;
     margin-right: 6px;
 }
@@ -158,12 +155,11 @@ label {
 input {
     width: 100%;
     height: 56px;
-    padding: 0 15px;
-    border: 2px solid #e5e5e5;
+    border: 2px solid var(--line);
     border-radius: 14px;
-    background: white;
-    color: var(--text);
-    font-size: 18px;
+    padding: 0 14px;
+    font-size: 17px;
+    background: #fff;
     outline: none;
 }
 
@@ -171,80 +167,94 @@ input:focus {
     border-color: var(--kfc-red);
 }
 
-/* QT 特別設計 */
+/* =========================
+   QT Buttons
+========================= */
 
-.qt-wrapper {
-    position: relative;
+.qt-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
 }
 
-.qt-wrapper input {
-    padding-right: 65px;
+.qt-btn {
+    height: 54px;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: none;
+    margin: 0;
+    transition: .15s ease;
 }
 
-.qt-unit {
-    position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--gray);
-    font-weight: bold;
+.qt-btn.active {
+    background: var(--kfc-red);
+    border-color: var(--kfc-red);
+    color: #fff;
 }
 
-/* 按鈕 */
+.qt-btn:active {
+    transform: scale(.96);
+}
 
-button {
+/* =========================
+   Main Button
+========================= */
+
+.main-btn {
     width: 100%;
-    min-height: 60px;
-    margin-top: 8px;
+    height: 60px;
     border: none;
     border-radius: 16px;
+    margin-top: 4px;
     background: var(--kfc-red);
-    color: white;
+    color: #fff;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
     box-shadow: 0 6px 0 var(--kfc-dark-red);
-    transition: transform 0.1s;
 }
 
-button:active {
+.main-btn:active {
     transform: translateY(4px);
     box-shadow: 0 2px 0 var(--kfc-dark-red);
 }
 
-/* 錯誤 */
+/* =========================
+   Error
+========================= */
 
 .error {
     display: none;
     margin-top: 18px;
     padding: 14px;
-    background: #fff0f0;
-    color: var(--kfc-red);
     border-radius: 12px;
+    background: #fff0f2;
+    color: var(--kfc-red);
     text-align: center;
-    font-weight: bold;
+    font-weight: 800;
 }
 
-/* 結果 */
+/* =========================
+   Result
+========================= */
 
 .result {
     display: none;
     margin-top: 28px;
-    overflow: hidden;
     border-radius: 22px;
-    background: white;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,.10);
 }
-
-/* 結果標頭 */
 
 .result-header {
     padding: 22px 20px;
-    color: white;
+    color: #fff;
     text-align: center;
-}
-
-.instant .result-header {
     background: var(--kfc-red);
 }
 
@@ -253,8 +263,8 @@ button:active {
 }
 
 .result-icon {
-    font-size: 38px;
-    margin-bottom: 6px;
+    font-size: 36px;
+    margin-bottom: 4px;
 }
 
 .result-type {
@@ -262,30 +272,33 @@ button:active {
     font-weight: 900;
 }
 
-/* 核心指令 */
+/* =========================
+   Target Time
+========================= */
 
 .action-area {
-    padding: 28px 20px;
+    padding: 28px 20px 22px;
     text-align: center;
+    background: #fff;
 }
 
 .action-label {
-    font-size: 16px;
     color: var(--gray);
+    font-size: 15px;
     margin-bottom: 8px;
 }
 
 .action-text {
-    font-size: 20px;
-    font-weight: 800;
+    font-size: 19px;
     line-height: 1.5;
+    font-weight: 900;
 }
 
 .deadline-time {
-    margin-top: 15px;
-    font-size: 46px;
+    margin-top: 12px;
+    font-size: 50px;
     font-weight: 900;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
     color: var(--kfc-red);
 }
 
@@ -293,47 +306,61 @@ button:active {
     color: #222;
 }
 
-/* 快速指令 */
+/* =========================
+   Status
+========================= */
 
-.quick-action {
-    margin: 0 20px 24px;
+.status {
+    margin: 0 18px 22px;
     padding: 18px;
     border-radius: 16px;
     text-align: center;
-    font-weight: 800;
 }
 
-.instant .quick-action {
-    background: #fff1f3;
-    color: var(--kfc-red);
+.status.ok {
+    background: var(--green-bg);
+    color: var(--green);
 }
 
-.reservation .quick-action {
-    background: #f1f1f1;
-    color: #222;
+.status.late {
+    background: var(--orange-bg);
+    color: #8a5000;
 }
 
-/* 明細 */
+.status-title {
+    font-size: 19px;
+    font-weight: 900;
+    margin-bottom: 7px;
+}
+
+.status-text {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* =========================
+   Detail
+========================= */
 
 .detail {
-    border-top: 1px solid #eee;
-    padding: 18px 20px 22px;
+    border-top: 1px solid var(--line);
     background: #fafafa;
+    padding: 18px 20px 24px;
 }
 
 .detail-title {
     font-size: 14px;
-    font-weight: 800;
-    margin-bottom: 12px;
+    font-weight: 900;
+    margin-bottom: 10px;
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
     gap: 15px;
-    padding: 8px 0;
-    font-size: 14px;
+    padding: 9px 0;
     border-bottom: 1px dashed #ddd;
+    font-size: 14px;
 }
 
 .detail-row:last-child {
@@ -341,42 +368,24 @@ button:active {
 }
 
 .detail-row span:last-child {
-    font-weight: 800;
+    font-weight: 900;
     text-align: right;
 }
 
-/* 手機小螢幕 */
-
-@media (max-width: 380px) {
-
-    .brand h1 {
-        font-size: 21px;
-    }
-
-    .deadline-time {
-        font-size: 40px;
-    }
-
-    input {
-        font-size: 16px;
-    }
-
-}
-
-/* 電腦版讓畫面看起來仍像手機 App */
+/* =========================
+   Desktop
+========================= */
 
 @media (min-width: 601px) {
-
     body {
-        padding: 20px;
+        padding: 24px;
     }
 
     .app {
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 40px rgba(0,0,0,.12);
     }
-
 }
 
 </style>
@@ -386,115 +395,142 @@ button:active {
 
 <div class="app">
 
+    <!-- Header -->
+
     <div class="header">
+        <div class="header-content">
 
-        <div class="brand">
-
-            <div class="brand-mark">
+            <div class="logo-box">
                 D25
             </div>
 
             <div>
-                <h1>抵達時間判斷器</h1>
-                <p>即時單／預約單快速判斷</p>
+                <h1>抵達判斷器</h1>
+                <p>即時單／預約單快速追蹤</p>
             </div>
 
         </div>
-
     </div>
 
 
     <div class="content">
 
+        <!-- Notice -->
+
         <div class="notice">
-            輸入訂單資訊後，系統會直接判斷：
-            <br>
-            <strong>這張單要追「落單＋25分鐘」還是「預計送達時間」</strong>
+            輸入訂單時間並選擇 QT，
+            系統將自動判斷訂單類型與
+            <strong>應追蹤的抵達時間。</strong>
         </div>
 
 
-        <div class="form-card">
+        <!-- 落單時間 -->
 
+        <div class="field">
 
-            <!-- 落單時間 -->
+            <label>
+                <span class="step">1</span>
+                落單時間
+            </label>
 
-            <div class="field">
-
-                <label>
-                    <span class="label-number">1</span>
-                    落單時間
-                </label>
-
-                <input
-                    type="datetime-local"
-                    id="orderTime"
-                >
-
-            </div>
-
-
-            <!-- 預計送達 -->
-
-            <div class="field">
-
-                <label>
-                    <span class="label-number">2</span>
-                    原預計送達時間
-                </label>
-
-                <input
-                    type="datetime-local"
-                    id="estimatedTime"
-                >
-
-            </div>
-
-
-            <!-- QT -->
-
-            <div class="field">
-
-                <label>
-                    <span class="label-number">3</span>
-                    QT 時間
-                </label>
-
-                <div class="qt-wrapper">
-
-                    <input
-                        type="number"
-                        id="qt"
-                        placeholder="例如 25"
-                        min="0"
-                    >
-
-                    <div class="qt-unit">
-                        分鐘
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <button onclick="calculate()">
-                判斷這張訂單
-            </button>
-
-
-            <div
-                class="error"
-                id="error"
-            ></div>
-
-
-            <div
-                class="result"
-                id="result"
-            ></div>
-
+            <input
+                type="datetime-local"
+                id="orderTime"
+            >
 
         </div>
+
+
+        <!-- 預計送達時間 -->
+
+        <div class="field">
+
+            <label>
+                <span class="step">2</span>
+                預計送達時間
+            </label>
+
+            <input
+                type="datetime-local"
+                id="estimatedTime"
+            >
+
+        </div>
+
+
+        <!-- QT -->
+
+        <div class="field">
+
+            <label>
+                <span class="step">3</span>
+                選擇 QT
+            </label>
+
+            <div class="qt-buttons">
+
+                <button
+                    class="qt-btn"
+                    data-qt="15"
+                    type="button"
+                >
+                    15
+                </button>
+
+                <button
+                    class="qt-btn"
+                    data-qt="25"
+                    type="button"
+                >
+                    25
+                </button>
+
+                <button
+                    class="qt-btn"
+                    data-qt="30"
+                    type="button"
+                >
+                    30
+                </button>
+
+                <button
+                    class="qt-btn"
+                    data-qt="35"
+                    type="button"
+                >
+                    35
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- 判斷按鈕 -->
+
+        <button
+            class="main-btn"
+            onclick="calculate()"
+        >
+            判斷這張訂單
+        </button>
+
+
+        <!-- Error -->
+
+        <div
+            class="error"
+            id="error"
+        ></div>
+
+
+        <!-- Result -->
+
+        <div
+            class="result"
+            id="result"
+        ></div>
+
 
     </div>
 
@@ -503,6 +539,36 @@ button:active {
 
 <script>
 
+/* =========================
+   QT 選擇
+========================= */
+
+let selectedQT = null;
+
+const qtButtons =
+    document.querySelectorAll(".qt-btn");
+
+qtButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        qtButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        selectedQT =
+            Number(button.dataset.qt);
+
+    });
+
+});
+
+
+/* =========================
+   時間格式
+========================= */
 
 function formatTime(date) {
 
@@ -518,6 +584,10 @@ function formatTime(date) {
 }
 
 
+/* =========================
+   主計算
+========================= */
+
 function calculate() {
 
     const orderValue =
@@ -526,9 +596,6 @@ function calculate() {
     const estimatedValue =
         document.getElementById("estimatedTime").value;
 
-    const qtValue =
-        document.getElementById("qt").value;
-
     const result =
         document.getElementById("result");
 
@@ -536,10 +603,9 @@ function calculate() {
         document.getElementById("error");
 
 
-    /* 重置 */
+    /* Reset */
 
     result.style.display = "none";
-
     error.style.display = "none";
 
     result.className = "result";
@@ -550,11 +616,11 @@ function calculate() {
     if (
         !orderValue ||
         !estimatedValue ||
-        qtValue === ""
+        selectedQT === null
     ) {
 
         error.innerText =
-            "請完整輸入落單時間、原預計送達時間與 QT。";
+            "請完整輸入時間並選擇 QT。";
 
         error.style.display = "block";
 
@@ -570,38 +636,78 @@ function calculate() {
         new Date(estimatedValue);
 
     const qt =
-        Number(qtValue);
+        selectedQT;
 
 
-    /* 計算時間差 */
+    /* =========================
+       判斷公式
+
+       原預計送達時間
+       - 落單時間
+       - 14 分鐘
+       > QT
+
+       → 預約單
+
+       其餘
+       → 即時單
+    ========================= */
 
     const totalMinutes =
         (estimatedTime - orderTime)
         / 1000
         / 60;
 
-
-    /*
-        D25 判斷公式
-
-        原預計送達時間
-        - 落單時間
-        - 14分鐘
-        > QT
-
-        = 預約單
-
-        其他
-        = 即時單
-    */
-
     const compareMinutes =
         totalMinutes - 14;
+
+
+    let orderType = "";
+    let targetTime = null;
 
 
     /* 預約單 */
 
     if (compareMinutes > qt) {
+
+        orderType = "預約單";
+
+        targetTime =
+            estimatedTime;
+
+    }
+
+    /* 即時單 */
+
+    else {
+
+        orderType = "即時單";
+
+        targetTime =
+            new Date(
+                orderTime.getTime()
+                + 25 * 60 * 1000
+            );
+
+    }
+
+
+    /* =========================
+       判斷目前時間
+    ========================= */
+
+    const now =
+        new Date();
+
+    const stillOnTime =
+        now <= targetTime;
+
+
+    /* =========================
+       預約單結果
+    ========================= */
+
+    if (orderType === "預約單") {
 
         result.className =
             "result reservation";
@@ -628,58 +734,11 @@ function calculate() {
                 </div>
 
                 <div class="action-text">
-                    請於預計送達時間前
-                    <br>
-                    完成「抵達」
+                    請於此時間前完成「抵達」
                 </div>
 
                 <div class="deadline-time">
-                    ${formatTime(estimatedTime)}
-                </div>
-
-            </div>
-
-
-            <div class="quick-action">
-                🎯 追預計送達時間
-            </div>
-
-
-            <div class="detail">
-
-                <div class="detail-title">
-                    判斷明細
-                </div>
-
-                <div class="detail-row">
-                    <span>預計送達－落單</span>
-                    <span>
-                        ${totalMinutes.toFixed(0)} 分鐘
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>扣除固定時間</span>
-                    <span>
-                        ${compareMinutes.toFixed(0)} 分鐘
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>QT</span>
-                    <span>
-                        ${qt} 分鐘
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>判斷結果</span>
-                    <span>
-                        ${compareMinutes.toFixed(0)}
-                        ＞
-                        ${qt}
-                        → 預約單
-                    </span>
+                    ${formatTime(targetTime)}
                 </div>
 
             </div>
@@ -689,22 +748,11 @@ function calculate() {
     }
 
 
-    /* 即時單 */
+    /* =========================
+       即時單結果
+    ========================= */
 
     else {
-
-        /*
-            即時單：
-
-            落單時間 + 25分鐘
-        */
-
-        const deadline =
-            new Date(
-                orderTime.getTime()
-                + 25 * 60 * 1000
-            );
-
 
         result.className =
             "result instant";
@@ -731,58 +779,11 @@ function calculate() {
                 </div>
 
                 <div class="action-text">
-                    請於落單後 25 分鐘內
-                    <br>
-                    完成「抵達」
+                    請於此時間前完成「抵達」
                 </div>
 
                 <div class="deadline-time">
-                    ${formatTime(deadline)}
-                </div>
-
-            </div>
-
-
-            <div class="quick-action">
-                🚨 追「落單＋25分鐘」
-            </div>
-
-
-            <div class="detail">
-
-                <div class="detail-title">
-                    判斷明細
-                </div>
-
-                <div class="detail-row">
-                    <span>預計送達－落單</span>
-                    <span>
-                        ${totalMinutes.toFixed(0)} 分鐘
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>扣除固定時間</span>
-                    <span>
-                        ${compareMinutes.toFixed(0)} 分鐘
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>QT</span>
-                    <span>
-                        ${qt} 分鐘
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>判斷結果</span>
-                    <span>
-                        ${compareMinutes.toFixed(0)}
-                        ≤
-                        ${qt}
-                        → 即時單
-                    </span>
+                    ${formatTime(targetTime)}
                 </div>
 
             </div>
@@ -792,10 +793,138 @@ function calculate() {
     }
 
 
+    /* =========================
+       追蹤狀態
+    ========================= */
+
+    if (stillOnTime) {
+
+        result.innerHTML += `
+
+            <div class="status ok">
+
+                <div class="status-title">
+                    🟢 持續配送追蹤中
+                </div>
+
+                <div class="status-text">
+                    請依目標時間持續追蹤配送進度，
+                    並於指定時間前完成「抵達」。
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* 已超過時間 */
+
+    else {
+
+        result.innerHTML += `
+
+            <div class="status late">
+
+                <div class="status-title">
+                    📌 建議立即處理
+                </div>
+
+                <div class="status-text">
+
+                    📞 聯絡顧客延長送達時間
+                    <br>
+
+                    🛠️ 修正 POS 時間
+
+                    <br><br>
+
+                    完成處理後，
+                    請持續確認訂單配送進度。
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================
+       判斷明細
+    ========================= */
+
+    result.innerHTML += `
+
+        <div class="detail">
+
+            <div class="detail-title">
+                判斷明細
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    預計送達－落單
+                </span>
+
+                <span>
+                    ${totalMinutes.toFixed(0)} 分鐘
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    扣除 14 分鐘
+                </span>
+
+                <span>
+                    ${compareMinutes.toFixed(0)} 分鐘
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    選擇 QT
+                </span>
+
+                <span>
+                    ${qt} 分鐘
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    判定
+                </span>
+
+                <span>
+                    ${orderType}
+                </span>
+
+            </div>
+
+        </div>
+
+    `;
+
+
     result.style.display = "block";
 
 
-    /* 自動捲動到結果 */
+    /* 自動捲動 */
 
     setTimeout(() => {
 
@@ -807,7 +936,6 @@ function calculate() {
     }, 100);
 
 }
-
 
 </script>
 
